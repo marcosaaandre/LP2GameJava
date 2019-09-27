@@ -10,12 +10,12 @@ import dev.learninggame.net.utils.Utils;
  * Envia o player
  *
  */
-public class Packet06Move extends GamePacket {
+public class Packet06Player extends GamePacket {
 	private static final int headerSize = 2;
 	private Player player;
 	
-	public Packet06Move(byte[] packet) {
-		super(PacketType.MOVE);
+	public Packet06Player(byte[] packet) {
+		super(PacketType.PLAYER);
 		this.packet = packet;
 
 		try {
@@ -26,8 +26,8 @@ public class Packet06Move extends GamePacket {
 		}
 	}
 	
-	public Packet06Move(Player player) {
-		super(PacketType.MOVE);
+	public Packet06Player(Player player) {
+		super(PacketType.PLAYER);
 		
 		try {
 			packet = Utils.concatenate(packet, Utils.objectToBytes(player));

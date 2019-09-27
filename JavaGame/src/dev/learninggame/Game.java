@@ -33,8 +33,8 @@ public class Game implements Runnable {
 	private Graphics g;
 	
 	//States
-	public State gameState;
-	public State menuState;
+	private State gameState;
+	private State menuState;
 	
 	//Input
 	private KeyManager keyManager;
@@ -137,6 +137,14 @@ public class Game implements Runnable {
 		return client;
 	}
 	
+	public Server getServer() {
+		return server;
+	}
+	
+	public State getGameState() {
+		return gameState;
+	}
+	
 	public synchronized void start() {
 		if (running) {
 			return;
@@ -149,7 +157,8 @@ public class Game implements Runnable {
 		// Iniciando os sockets
 		if (JOptionPane.showConfirmDialog(null, "Você quer ser o servidor?") == 0) {
 			server = new Server(this);
-			new Thread(server).start();
+			Thread tServer = new Thread(server);
+			tServer.start();
 		}
 				
 		String username = JOptionPane.showInputDialog("Digite seu nick: ");

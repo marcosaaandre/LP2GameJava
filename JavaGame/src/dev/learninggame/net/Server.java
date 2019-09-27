@@ -23,7 +23,7 @@ import dev.learninggame.net.packets.GamePacket;
 import dev.learninggame.net.packets.Packet01Login;
 import dev.learninggame.net.packets.Packet04World;
 import dev.learninggame.net.packets.Packet05RequestWorld;
-import dev.learninggame.net.packets.Packet06Move;
+import dev.learninggame.net.packets.Packet06Player;
 import dev.learninggame.net.packets.Packet07PlantBomb;
 import dev.learninggame.net.packets.PacketType;
 import dev.learninggame.net.utils.Utils;
@@ -35,7 +35,7 @@ public class Server implements Runnable {
 	/* Delay em milisegundos entre cada atualização 
 	 * 40: 25/sec
 	 */
-	public static final int TICK_RATE = 40;		
+	public static final int TICK_RATE = 40;	
 	
 	private DatagramSocket socket;
 	private Handler handler;
@@ -103,6 +103,14 @@ public class Server implements Runnable {
 	}
 	
 	/**
+	 * Verifica se o thread que está executando o método está
+	 *     executando o servidor
+	 * 
+	 * @param threadId - id to thread que está chamando o método
+	 * @return true se o thread que está chamando o método é o servidor
+	 */
+	
+	/**
 	 * Manda o byte[] data para o client especificado.
 	 * 
 	 * @param data
@@ -158,8 +166,8 @@ public class Server implements Runnable {
 		case REQUEST_WORLD:
 			sendWorld(sourceIp, sourcePort);
 			break;
-		case MOVE:
-			move(new Packet06Move(data));
+		case PLAYER:
+			updatePlayer(new Packet06Player(data));
 			break;
 		case PLANT_BOMB:
 			Client client = findClient(sourceIp, sourcePort);
@@ -235,7 +243,7 @@ public class Server implements Runnable {
 	/**
 	 * Atualiza o estado do player que moveu
 	 */
-	public void move(Packet06Move packet) {
+	public void updatePlayer(Packet06Player packet) {
 		Player player = packet.getPlayer();
 		String username = player.getUsername();
 		

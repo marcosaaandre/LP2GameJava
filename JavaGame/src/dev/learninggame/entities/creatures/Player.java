@@ -13,7 +13,7 @@ import dev.learninggame.entities.Fire;
 import dev.learninggame.gfx.Animation;
 import dev.learninggame.gfx.Assets;
 import dev.learninggame.net.Client;
-import dev.learninggame.net.packets.Packet06Move;
+import dev.learninggame.net.packets.Packet06Player;
 import dev.learninggame.net.packets.Packet07PlantBomb;
 
 public class Player extends Creature implements Serializable, Runnable{
@@ -129,19 +129,19 @@ public class Player extends Creature implements Serializable, Runnable{
 		//Tempo
 		tempoFinal = System.currentTimeMillis();
 		
+		//Attack
+		checkHurts();
+		
 		//Movement
 		getInput();
 		move();
-		//handler.getGameCamera().centerOnEntity(this);
-		//Attack
-		checkHurts();
 	}
 	
 	@Override
 	public void move() {
 		super.move();
-		if (client != null) {
-			Packet06Move packet = new Packet06Move(this);
+		if (client != null && client.getUsername().equals(username)) {
+			Packet06Player packet = new Packet06Player(this);
 			client.sendPacket(packet);
 		}
 	}
