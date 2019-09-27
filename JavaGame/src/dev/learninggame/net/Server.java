@@ -13,6 +13,7 @@ import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
 
+import dev.learninggame.Game;
 import dev.learninggame.Handler;
 import dev.learninggame.entities.Bomb;
 import dev.learninggame.entities.EntityManager;
@@ -45,9 +46,12 @@ public class Server implements Runnable {
 	private NetWorld nextWorld;
 	private ScheduledExecutorService worldManager;
 	
-	public Server(Handler handler) {
-		this.handler = handler;
-		this.world = handler.getWorld();
+	public Server(Game game) {
+		handler = new Handler(game);
+		world = new World(this.handler, "res/worlds/world1.txt");
+		handler.setWorld(world);
+		world.setHandler(this.handler);
+		
 		connectedClients = new HashSet<Client>();
 		currentWorld = null;
 		nextWorld = null;
@@ -70,16 +74,11 @@ public class Server implements Runnable {
 		    		} catch (Exception e) {
 		    			e.printStackTrace();
 		    		}
-		    		synchronized (world) {
-			    		nextWorld = new NetWorld(world);
-			    		nextWorld.run();
-			    		while (!nextWorld.isReady()) {
-			    			;
-			    		}
-			    		currentWorld = nextWorld;
-		    		}
+		    		nextWorld = new NetWorld(world);
+		    		nextWorld.run();
+		    		currentWorld = nextWorld;
+		    		
 			    	sendCurrentWorldToClients();
-		    	 
 		    	}
 		    }, 0, Server.TICK_RATE, TimeUnit.MILLISECONDS); 
 	}
@@ -211,8 +210,8 @@ public class Server implements Runnable {
 	}
 	
 	private void sendWorld(InetAddress clientIp, int clientPort) {
-		while (currentWorld == null) {
-			;	/* Mudar isso */
+		if (currentWorld == null) {
+			return;
 		}
 		
 		//System.out.println("sendWorld");

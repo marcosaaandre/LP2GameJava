@@ -59,11 +59,13 @@ public class NetWorld implements Runnable {
 	}
 	
 	private void serializeWorld() {
-		try {
-			serializedWorld = Utils.sliceBytes(Utils.objectToBytes(world), Packet03LargeObject.bytesPerPart);
-		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+		synchronized (world) {
+			try {
+				serializedWorld = Utils.sliceBytes(Utils.objectToBytes(world), Packet03LargeObject.bytesPerPart);
+			} catch (IOException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
 		}
 	}
 

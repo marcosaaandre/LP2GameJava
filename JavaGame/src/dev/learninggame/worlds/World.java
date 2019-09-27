@@ -11,6 +11,7 @@ import dev.learninggame.entities.EntityManager;
 import dev.learninggame.entities.Fire;
 import dev.learninggame.entities.creatures.Player;
 import dev.learninggame.entities.creatures.PlayerGirl;
+import dev.learninggame.net.Server;
 import dev.learninggame.tiles.Tile;
 import dev.learninggame.utils.Utils;
 

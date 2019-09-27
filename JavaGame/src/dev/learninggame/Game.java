@@ -43,7 +43,7 @@ public class Game implements Runnable {
 	//sons
 	// private Som sound, explosion;
 	
-	//Handler
+	//Handlers
 	private Handler handler;
 	
 	// Sockets
@@ -148,7 +148,7 @@ public class Game implements Runnable {
 		
 		// Iniciando os sockets
 		if (JOptionPane.showConfirmDialog(null, "Você quer ser o servidor?") == 0) {
-			server = new Server(handler);
+			server = new Server(this);
 			new Thread(server).start();
 		}
 				
