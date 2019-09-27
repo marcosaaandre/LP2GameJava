@@ -160,9 +160,15 @@ public class Game implements Runnable {
 			Thread tServer = new Thread(server);
 			tServer.start();
 		}
-				
+		
+		String[] playerTypes = {"Boy", "Girl"};
+		
 		String username = JOptionPane.showInputDialog("Digite seu nick: ");
-		Client client = new Client(handler, username, "localhost");
+		int playerType = JOptionPane.showOptionDialog(null, "Escolhe o seu personagem: ",
+                null, JOptionPane.DEFAULT_OPTION, JOptionPane.INFORMATION_MESSAGE, null, playerTypes, playerTypes[0]) 
+				+ 1;
+		
+		Client client = new Client(handler, playerType, username, "localhost");
 		new Thread(client).start();
 	}
 	

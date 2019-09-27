@@ -10,15 +10,11 @@ import dev.learninggame.ui.UIManager;
 
 public class MenuState extends State {
 	
-	//private int mouseX;
-	//private int mouseY;
 	private UIManager uiManager;
 	
 	public MenuState(Handler handler) {
 		super(handler);
 		uiManager = new UIManager(handler);
-		/*mouseX = handler.getMouseManager().getMouseX();
-		mouseY =  handler.getMouseManager().getMouseY();*/
 		handler.getMouseManager().setUIManager(uiManager);
 		
 		
@@ -35,10 +31,6 @@ public class MenuState extends State {
 	
 	@Override
 	public void tick() {
-		//Pega a nova posicao do mouse dada pelo handler
-		/*mouseX = handler.getMouseManager().getMouseX();
-		mouseY =  handler.getMouseManager().getMouseY();*/
-		
 		uiManager.tick();
 		
 	}

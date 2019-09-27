@@ -13,22 +13,23 @@ import dev.learninggame.entities.Fire;
 import dev.learninggame.gfx.Animation;
 import dev.learninggame.gfx.Assets;
 import dev.learninggame.net.Client;
+import dev.learninggame.net.Server;
 import dev.learninggame.net.packets.Packet06Player;
 import dev.learninggame.net.packets.Packet07PlantBomb;
 
 public class Player extends Creature implements Serializable, Runnable{
 	
 	//Atributos
-	private int maxBombs;
+	protected int maxBombs;
 	private int nOfBombs;
 	
 	//Animations
-	private Animation animUp;
-	private Animation animDown;
-	private Animation animLeft;
-	private Animation animRight;
-	private long tempoInicio;
-	private long tempoFinal;
+	protected Animation animUp;
+	protected Animation animDown;
+	protected Animation animLeft;
+	protected Animation animRight;
+	protected long tempoInicio;
+	protected long tempoFinal;
 	protected boolean solid;
 	
 	//Multiplayer
@@ -43,7 +44,7 @@ public class Player extends Creature implements Serializable, Runnable{
 	public Player(String username, Handler handler, float x, float y) {	
 		super(handler, x, y, Creature.DEFAULT_CREATURE_WIDTH, Creature.DEFAULT_CREATURE_HEIGHT);
 		this.username = username;
-		maxBombs = 10;
+		maxBombs = 9999;
 		
 		//ajuste da posicao da hitbox
 		bounds.x = 34;
@@ -154,14 +155,20 @@ public class Player extends Creature implements Serializable, Runnable{
 		}
 	}
 	
-	public void die() {
+	/* Cuida de terminar o jogo quando o player morrer */
+	@Override
+	public void die() {		
+		Server server = handler.getGame().getServer();
+		if (client != null && server != null) {
+			server.setLoser(getUsername());
+		}
 	}
 	
 	public boolean isSolid() {
 		return solid;
 	}
 	
-	private void getInput() {
+	protected void getInput() {
 		xMove = 0; //variaveis declaradas na classe Creature
 		yMove = 0;
 		
@@ -210,7 +217,7 @@ public class Player extends Creature implements Serializable, Runnable{
 		g.fillRect((int) (x + bounds.x), (int)(y + bounds.y), bounds.width, bounds.height);*/
 	}
 
-	private BufferedImage getCurrentAnimation() {
+	protected BufferedImage getCurrentAnimation() {
 		if(xMove > 0)
 			return animRight.getCurrentFrame();
 		if(xMove < 0)

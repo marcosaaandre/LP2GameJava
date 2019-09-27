@@ -13,11 +13,14 @@ import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
 
+import javax.swing.JOptionPane;
+
 import dev.learninggame.Game;
 import dev.learninggame.Handler;
 import dev.learninggame.entities.Bomb;
 import dev.learninggame.entities.EntityManager;
 import dev.learninggame.entities.creatures.Player;
+import dev.learninggame.entities.creatures.PlayerGirl;
 import dev.learninggame.net.World.NetWorld;
 import dev.learninggame.net.packets.GamePacket;
 import dev.learninggame.net.packets.Packet01Login;
@@ -25,6 +28,7 @@ import dev.learninggame.net.packets.Packet04World;
 import dev.learninggame.net.packets.Packet05RequestWorld;
 import dev.learninggame.net.packets.Packet06Player;
 import dev.learninggame.net.packets.Packet07PlantBomb;
+import dev.learninggame.net.packets.Packet08GameOver;
 import dev.learninggame.net.packets.PacketType;
 import dev.learninggame.net.utils.Utils;
 import dev.learninggame.worlds.World;
@@ -69,11 +73,7 @@ public class Server implements Runnable {
 		worldManager.scheduleWithFixedDelay(new Runnable() {
 		    	@Override
 		    	public void run() {
-		    		try {
-		    			tickWorld(); 
-		    		} catch (Exception e) {
-		    			e.printStackTrace();
-		    		}
+		    		tickWorld(); 
 		    		nextWorld = new NetWorld(world);
 		    		nextWorld.run();
 		    		currentWorld = nextWorld;
@@ -206,15 +206,19 @@ public class Server implements Runnable {
 	 * @param client
 	 */
 	private void givePlayer(Client client) {
-		Player player = new Player(client.getUsername(), null, world.getSpawnXBoy(), world.getSpawnYBoy());
+		Player player;
+		if (client.getPlayerType() == Client.PLAYER_BOY) {
+			player = new Player(client.getUsername(), null, 
+						world.getSpawnXBoy(), world.getSpawnYBoy());
+		} else {
+			player = new PlayerGirl(client.getUsername(), null, 
+						world.getSpawnXGirl(), world.getSpawnYGirl());
+		}
+		
 		synchronized (world) {
 			world.getEntityManager().addEntity(player);
 		}
 		client.setPlayer(player);
-		
-//		if (!world.getEntityManager().getEntities().isEmpty()) {
-//			System.out.println("player adicionado");
-//		}
 	}
 	
 	private void sendWorld(InetAddress clientIp, int clientPort) {
@@ -303,5 +307,26 @@ public class Server implements Runnable {
 		synchronized (world) {
 			world.tick();
 		}
+	}
+	
+	/*
+	 * Define esse jogador como o perdedor
+	 */
+	public void setLoser(String username) {
+		Client perdedor = null;
+		Client vencedor = null;
+		synchronized (connectedClients) {
+			for (Client c : connectedClients) {
+				if (username.equals(c.getUsername())) {
+					c.setHasLost(true);
+					perdedor = c;
+				} else {
+					vencedor = c;
+				}
+			}
+		}
+		
+		Packet08GameOver packet = new Packet08GameOver(vencedor.getUsername());
+		sendDataToAllClients(packet.getPacket());
 	}
 }

@@ -19,7 +19,9 @@ public class World implements Serializable {
 	
 	private transient Handler handler;
 	private int width, height;
-	private int spawnXBoy, spawnYBoy, spawnXGirl, spawnYGirl;
+	private int spawnXBoy, spawnYBoy;
+	private int spawnXGirl, spawnYGirl;
+	
 	//Coordenadas das tiles
 	private int[][] tiles;
 	//Entities
@@ -91,6 +93,14 @@ public class World implements Serializable {
 	
 	public int getSpawnYBoy () {
 		return spawnYBoy;
+	}
+	
+	public int getSpawnXGirl () {
+		return spawnXGirl;
+	}
+	
+	public int getSpawnYGirl () {
+		return spawnYGirl;
 	}
 	
 	public EntityManager getEntityManager() {

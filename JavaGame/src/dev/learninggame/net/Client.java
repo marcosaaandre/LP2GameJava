@@ -12,6 +12,8 @@ import java.util.Arrays;
 import java.util.HashSet;
 import java.util.concurrent.CopyOnWriteArrayList;
 
+import javax.swing.JOptionPane;
+
 import dev.learninggame.Handler;
 import dev.learninggame.entities.Bomb;
 import dev.learninggame.entities.EntityManager;
@@ -20,11 +22,22 @@ import dev.learninggame.net.World.WorldBuffer;
 import dev.learninggame.net.packets.GamePacket;
 import dev.learninggame.net.packets.Packet01Login;
 import dev.learninggame.net.packets.Packet04World;
+import dev.learninggame.net.packets.Packet08GameOver;
 import dev.learninggame.net.packets.PacketType;
 import dev.learninggame.net.utils.Utils;
 import dev.learninggame.worlds.World;
 
 public class Client implements Runnable, Serializable {
+	
+	/* Identificação para os tipos de players */
+	public static final int PLAYER_BOY = 1; 
+	public static final int PLAYER_GIRL = 2;
+	
+	/* Identificação para este player */
+	private int playerType;
+	
+	/* Se ja perdeu o jogo */
+	private boolean hasLost;
 
 	private InetAddress serverIp;
 	private InetAddress ip;
@@ -41,8 +54,9 @@ public class Client implements Runnable, Serializable {
 	private transient HashSet<Client> connectedPlayers = new HashSet<Client>();
 
 	
-	public Client(Handler handler, String username, String serverIp) {
+	public Client(Handler handler, int playerType, String username, String serverIp) {
 		this.username = username;
+		this.playerType = playerType;
 		this.handler = handler;
 		this.worldBuffer = new WorldBuffer();
 		
@@ -116,6 +130,18 @@ public class Client implements Runnable, Serializable {
 		this.player = player;
 	}
 	
+	public int getPlayerType() {
+		return playerType;
+	}
+	
+	public void setHasLost(boolean hasLost) {
+		this.hasLost = hasLost;
+	}
+	
+	public boolean hasLost() {
+		return hasLost;
+	}
+	
 	public void run() {
 		login();
 		
@@ -164,6 +190,9 @@ public class Client implements Runnable, Serializable {
 			break;
 		case WORLD:
 			fetchWorld(new Packet04World(data));
+			break;
+		case GAME_OVER:
+			endGame(new Packet08GameOver(data));
 			break;
 		case INVALID:
 			break;
@@ -229,5 +258,12 @@ public class Client implements Runnable, Serializable {
 	
 	private void login() {
 		sendPacket(new Packet01Login(this));
+	}
+	
+	private void endGame(Packet08GameOver packet) {
+		String winner = packet.getWinner();
+		
+		JOptionPane.showMessageDialog(null, "Fim de jogo: "
+				+ winner + " Venceu!!!");
 	}
 }
