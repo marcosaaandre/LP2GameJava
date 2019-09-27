@@ -46,42 +46,119 @@ public class PlayerGirl extends Creature{
 		tempoFinal = System.currentTimeMillis();
 
 	}
+//
+//	@Override
+//	public void tick() {
+//		animDown.tick();
+//		animUp.tick();
+//		animRight.tick();
+//		animLeft.tick();
+//		
+//		//Tempo
+//		tempoFinal = System.currentTimeMillis();
+//		
+//		getInput();
+//		move();
+//		
+//		checkHurts();
+//		
+//	}
+//	
+//	//Bomb Attacks
+//	private void checkHurts() {		
+//		if(tempoFinal - currentHurt > 1000 && handler.getWorld().hasFire(getCurrentTileX(x), getCurrentTileY(y))) {
+//			hurt(25);
+//			currentHurt = tempoFinal;
+//		}
+//	}
+//	
+//	@Override
+//	public void render(Graphics g) {
+//		g.drawImage(getCurrentAnimation(), (int)(x), (int)(y), width, height, null);
+//
+//		//g.setColor(Color.red); // Testar hit box
+//		//g.fillRect((int) (x + bounds.x), (int)(y + bounds.y), bounds.width, bounds.height);
+//
+//		/*g.setColor(Color.red); // Testar hit box
+//		g.fillRect((int) (x + bounds.x), (int)(y + bounds.y), bounds.width, bounds.height);*/
+//
+//		
+//	}
+//
+//	@Override
+//	protected void die() {
+//		// TODO Auto-generated method stub
+//		
+//	}
+//	
+//	private void getInput() {
+//		xMove = 0; //variaveis declaradas na classe Creature
+//		yMove = 0;
+//		
+//		if(handler.getKeyManager().up2)
+//			yMove = -speed;
+//		if(handler.getKeyManager().down2)
+//			yMove = speed;
+//		if(handler.getKeyManager().left2)
+//			xMove = -speed;
+//		if(handler.getKeyManager().right2)
+//			xMove = speed;
+//		if(handler.getKeyManager().bombGirl) {
+//			if(tempoFinal - tempoInicio > 200) {
+//				installBomb();
+//				System.out.println("aqui");
+//				tempoInicio = tempoFinal;
+//			}
+//		}
+//	}
+//	
+//	private BufferedImage getCurrentAnimation() {
+//		
+//		 if(xMove > 0) 
+//			 return animRight.getCurrentFrame(); 
+//		 if(xMove < 0) 
+//			 return animLeft.getCurrentFrame();
+//		  if(yMove > 0)
+//			  return animDown.getCurrentFrame();
+//		 if(yMove < 0)
+//			 return animUp.getCurrentFrame();
+//		 
+//		return Assets.woman;
+//	}
+//	
+//	public int getnOfBombs() {
+//		return nOfBombs;
+//	}
+//
+//	public void addnOfBombs() {
+//		this.nOfBombs--;
+//	}
+//	
+//	public int getMaxBombs() {
+//		return maxBombs;
+//	}
+//	
+//	public void installBomb() {
+//		if(!handler.getWorld().hasBomb(getCurrentTileX(x), getCurrentTileY(y+15)) 
+//				&& nOfBombs < maxBombs) {
+//			System.out.println("Aqui");
+//			Bomb bomba = new Bomb(handler, (int)x, (int)y+15);
+//			handler.getWorld().getEntityManager().addBomb(bomba);
+//			System.out.println("Bomba plantada");
+//			nOfBombs++;
+//		}
+//	}
+// 
 
 	@Override
 	public void tick() {
-		animDown.tick();
-		animUp.tick();
-		animRight.tick();
-		animLeft.tick();
-		
-		//Tempo
-		tempoFinal = System.currentTimeMillis();
-		
-		getInput();
-		move();
-		
-		checkHurts();
+		// TODO Auto-generated method stub
 		
 	}
-	
-	//Bomb Attacks
-	private void checkHurts() {		
-		if(tempoFinal - currentHurt > 1000 && handler.getWorld().hasFire(getCurrentTileX(x), getCurrentTileY(y))) {
-			hurt(25);
-			currentHurt = tempoFinal;
-		}
-	}
-	
+
 	@Override
 	public void render(Graphics g) {
-		g.drawImage(getCurrentAnimation(), (int)(x), (int)(y), width, height, null);
-
-		//g.setColor(Color.red); // Testar hit box
-		//g.fillRect((int) (x + bounds.x), (int)(y + bounds.y), bounds.width, bounds.height);
-
-		/*g.setColor(Color.red); // Testar hit box
-		g.fillRect((int) (x + bounds.x), (int)(y + bounds.y), bounds.width, bounds.height);*/
-
+		// TODO Auto-generated method stub
 		
 	}
 
@@ -90,63 +167,4 @@ public class PlayerGirl extends Creature{
 		// TODO Auto-generated method stub
 		
 	}
-	
-	private void getInput() {
-		xMove = 0; //variaveis declaradas na classe Creature
-		yMove = 0;
-		
-		if(handler.getKeyManager().up2)
-			yMove = -speed;
-		if(handler.getKeyManager().down2)
-			yMove = speed;
-		if(handler.getKeyManager().left2)
-			xMove = -speed;
-		if(handler.getKeyManager().right2)
-			xMove = speed;
-		if(handler.getKeyManager().bombGirl) {
-			if(tempoFinal - tempoInicio > 200) {
-				installBomb();
-				System.out.println("aqui");
-				tempoInicio = tempoFinal;
-			}
-		}
-	}
-	
-	private BufferedImage getCurrentAnimation() {
-		
-		 if(xMove > 0) 
-			 return animRight.getCurrentFrame(); 
-		 if(xMove < 0) 
-			 return animLeft.getCurrentFrame();
-		  if(yMove > 0)
-			  return animDown.getCurrentFrame();
-		 if(yMove < 0)
-			 return animUp.getCurrentFrame();
-		 
-		return Assets.woman;
-	}
-	
-	public int getnOfBombs() {
-		return nOfBombs;
-	}
-
-	public void addnOfBombs() {
-		this.nOfBombs--;
-	}
-	
-	public int getMaxBombs() {
-		return maxBombs;
-	}
-	
-	public void installBomb() {
-		if(!handler.getWorld().hasBomb(getCurrentTileX(x), getCurrentTileY(y+15)) 
-				&& nOfBombs < maxBombs) {
-			System.out.println("Aqui");
-			Bomb bomba = new Bomb(handler, (int)x, (int)y+15);
-			handler.getWorld().getEntityManager().addBomb(bomba);
-			System.out.println("Bomba plantada");
-			nOfBombs++;
-		}
-	}
- 
 }

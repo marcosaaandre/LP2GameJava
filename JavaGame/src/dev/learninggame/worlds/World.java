@@ -1,6 +1,7 @@
 package dev.learninggame.worlds;
 
 import java.awt.Graphics;
+import java.io.Serializable;
 import java.util.Iterator;
 
 import dev.learninggame.Handler;
@@ -13,9 +14,9 @@ import dev.learninggame.entities.creatures.PlayerGirl;
 import dev.learninggame.tiles.Tile;
 import dev.learninggame.utils.Utils;
 
-public class World {
+public class World implements Serializable {
 	
-	private Handler handler;
+	private transient Handler handler;
 	private int width, height;
 	private int spawnXBoy, spawnYBoy, spawnXGirl, spawnYGirl;
 	//Coordenadas das tiles
@@ -27,15 +28,10 @@ public class World {
 	
 	public World(Handler handler, String path) {
 		this.handler = handler;
-		entityManager = new EntityManager(handler, new Player(handler, 100, 100),  new PlayerGirl(handler, 100, 100));
+		entityManager = new EntityManager(handler);
 		loadWorld(path);
 		
 		currentId = 0;
-		
-		entityManager.getPlayer().setX(spawnXBoy);
-		entityManager.getPlayer().setY(spawnYBoy);
-		entityManager.getPlayerGirl().setX(spawnXGirl);
-		entityManager.getPlayerGirl().setY(spawnYGirl);
 	}
 	
 	public void tick() {
@@ -86,6 +82,14 @@ public class World {
 				tiles[x][y] = Utils.parseInt(tokens[(x + y * width) + 6]);
 			}
 		}
+	}
+	
+	public int getSpawnXBoy () {
+		return spawnXBoy;
+	}
+	
+	public int getSpawnYBoy () {
+		return spawnYBoy;
 	}
 	
 	public EntityManager getEntityManager() {
@@ -150,17 +154,17 @@ public class World {
 		return false;
 	}
 	
-	public boolean hasPlayer(int currentEntityX, int currentEntityY) {
-		float playerX = entityManager.getPlayer().getX();
-		float playerY = entityManager.getPlayer().getY();
-		int currentPlayerX = (int)entityManager.getPlayer().getCurrentTileX(playerX);
-		int currentPlayerY = (int)entityManager.getPlayer().getCurrentTileX(playerY);
-		if(currentEntityX == currentPlayerX && currentEntityY == currentPlayerY)
-			return true;
-		
-		
-		return false;
-	}
+//	public boolean hasPlayer(int currentEntityX, int currentEntityY) {
+//		float playerX = entityManager.getPlayer().getX();
+//		float playerY = entityManager.getPlayer().getY();
+//		int currentPlayerX = (int)entityManager.getPlayer().getCurrentTileX(playerX);
+//		int currentPlayerY = (int)entityManager.getPlayer().getCurrentTileX(playerY);
+//		if(currentEntityX == currentPlayerX && currentEntityY == currentPlayerY)
+//			return true;
+//		
+//		
+//		return false;
+//	}
 	
 	public Brick getBrick(int currentEntityX, int currentEntityY) {
 		for(Brick b : entityManager.getBricks()) {
@@ -173,14 +177,10 @@ public class World {
 		return null;
 	}
 	
-	public Tile getPlayer() {
-		return null; // Isso nem faz sentido
-	}
-	
 	public void installFire(float bombX, float bombY, int asset, int id) {
 		Fire fire = new Fire(handler, bombX, bombY, asset);
 		fire.setId(id);
-		entityManager.addFire(fire);
+		entityManager.addEntity(fire);
 		for(int i = 0; i < 2; i++) {
 			fire.verifyOpenXleft();
 			fire.verifyOpenXright();
@@ -191,7 +191,7 @@ public class World {
 	
 	public void putBrick(float posX, float posY) {
 		Brick brick = new Brick(handler, posX, posY);
-		entityManager.addBrick(brick);
+		entityManager.addEntity(brick);
 	}
 	
 	public void addCurrentId() {
@@ -200,5 +200,9 @@ public class World {
 	
 	public int getCurrentId() {
 		return currentId;
+	}
+
+	public void setHandler(Handler handler) {
+		this.handler = handler;
 	}
 }

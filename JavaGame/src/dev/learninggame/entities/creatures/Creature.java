@@ -1,12 +1,14 @@
 package dev.learninggame.entities.creatures;
 
+import java.io.Serializable;
+
 import dev.learninggame.Handler;
 import dev.learninggame.entities.Bomb;
 import dev.learninggame.entities.Brick;
 import dev.learninggame.entities.Entity;
 import dev.learninggame.tiles.Tile;
 
-public abstract class Creature extends Entity{
+public abstract class Creature extends Entity implements Serializable {
 	
 	public static final int UP = 55;
 	public static final int DOWN = 56;
@@ -208,7 +210,7 @@ public abstract class Creature extends Entity{
 	
 	public void hurt(int amt) {
 		if(!hurted) {
-			System.out.println("Isso doeu!");
+			//System.out.println("Isso doeu!");
 			health -= amt;
 		}
 		

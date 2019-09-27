@@ -1,11 +1,12 @@
 package dev.learninggame.gfx;
 
 import java.awt.image.BufferedImage;
+import java.io.Serializable;
 
-public class Animation {
+public class Animation implements Serializable {
 	private int speed, index;
 	private long lastTime, timer;
-	private BufferedImage[] frames;
+	private transient BufferedImage[] frames;
 	
 	public Animation(int speed, BufferedImage[] frames) {
 		this.speed = speed; //Tempo maximo entre um frame e outro da animacao
@@ -30,6 +31,10 @@ public class Animation {
 	
 	public BufferedImage getCurrentFrame() {
 		return frames[index];
+	}
+
+	public void setFrames(BufferedImage[] frames) {
+		this.frames = frames;
 	}
 	
 }

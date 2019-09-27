@@ -23,7 +23,7 @@ public class Fire extends Entity{
 	public static final int TOP = 8;
 
 	
-	private BufferedImage[] fireSheet;
+	private static BufferedImage[] fireSheet = Assets.bombFire;
 	private int currentAsset;
 	//Time to disappear
 	private long initialTime;
@@ -43,8 +43,6 @@ public class Fire extends Entity{
 		//Tempo inicial da bomba
 		initialTime = System.currentTimeMillis();
 		currentTime = System.currentTimeMillis();
-		
-		fireSheet = Assets.bombFire;
 		
 	}
 	
@@ -188,7 +186,7 @@ public class Fire extends Entity{
 	 */
 	public void verifyTime() {
 		if(getTimeToDisappear() > 2000) {
-			handler.getWorld().getEntityManager().removeFire(id);
+			handler.getWorld().getEntityManager().removeEntity(this);
 			
 		}
 	}

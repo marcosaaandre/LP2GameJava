@@ -2,6 +2,7 @@ package dev.learninggame.entities;
 
 import java.awt.Graphics;
 import java.awt.Rectangle;
+import java.io.Serializable;
 
 import dev.learninggame.Handler;
 import dev.learninggame.tiles.Tile;
@@ -11,11 +12,11 @@ import dev.learninggame.tiles.Tile;
  * @author nrodrigo
  * Classe responsavel por conter os atributos das entidades contidas no jogo
  */
-public abstract class Entity {
+public abstract class Entity implements Serializable {
 	
 	public static final int DEFAULT_HEALTH = 50;
 	
-	protected Handler handler;
+	protected transient Handler handler;
 	protected float x, y;
 	protected int width, height;
 
@@ -36,6 +37,10 @@ public abstract class Entity {
 		setHealth(DEFAULT_HEALTH);
 		
 		bounds = new Rectangle(0, 0, width, height);
+	}
+	
+	public void setHandler(Handler handler) {
+		this.handler = handler;
 	}
 	
 	public float getX() {

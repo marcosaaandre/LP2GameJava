@@ -4,6 +4,7 @@ import java.awt.Color;
 import java.awt.Graphics;
 import java.awt.Rectangle;
 import java.awt.image.BufferedImage;
+import java.io.Serializable;
 
 import dev.learninggame.Handler;
 import dev.learninggame.entities.Bomb;
@@ -11,8 +12,11 @@ import dev.learninggame.entities.Entity;
 import dev.learninggame.entities.Fire;
 import dev.learninggame.gfx.Animation;
 import dev.learninggame.gfx.Assets;
+import dev.learninggame.net.Client;
+import dev.learninggame.net.packets.Packet06Move;
+import dev.learninggame.net.packets.Packet07PlantBomb;
 
-public class Player extends Creature implements Runnable{
+public class Player extends Creature implements Serializable, Runnable{
 	
 	//Atributos
 	private int maxBombs;
@@ -26,16 +30,19 @@ public class Player extends Creature implements Runnable{
 	private long tempoInicio;
 	private long tempoFinal;
 	protected boolean solid;
+	
+	//Multiplayer
+	private String username;
+	private transient Client client;
 
 	@Override
 	public void run() {
 		System.out.println("player iniciado");
 	}
 	
-	public Player(Handler handler, float x, float y) {	
+	public Player(String username, Handler handler, float x, float y) {	
 		super(handler, x, y, Creature.DEFAULT_CREATURE_WIDTH, Creature.DEFAULT_CREATURE_HEIGHT);
-		solid = true;
-		setSolidity(false);
+		this.username = username;
 		maxBombs = 10;
 		
 		//ajuste da posicao da hitbox
@@ -46,14 +53,60 @@ public class Player extends Creature implements Runnable{
 		bounds.height = 35;
 		
 		//Animations
-		animUp = new Animation(180, Assets.player_up);
-		animDown = new Animation(180, Assets.player_down);
-		animLeft = new Animation(150, Assets.player_left);
-		animRight = new Animation(150, Assets.player_right);
+		animUp = new Animation(180, null);
+		animDown = new Animation(180, null);
+		animLeft = new Animation(150, null);
+		animRight = new Animation(150, null);
+		updateFrames();
 		
 		//Contagem do tempo
-		tempoInicio = System.currentTimeMillis();
+		tempoInicio = 0;
 		tempoFinal = System.currentTimeMillis();
+	}
+	
+	public String getUsername() {
+		return username;
+	}
+	
+	public void setClient(Client client) {
+		this.client = client;
+	}
+	
+	@Override 
+	public boolean equals(Object object) {
+		if (this == object) {
+			return true;
+		}
+		
+		if (!(object instanceof Player)) {
+			return false;
+		}
+		Player otherPlayer = (Player) object;
+		
+		if (getUsername() == null) {
+			return false;
+		}
+		
+		return this.getUsername().trim().equalsIgnoreCase(
+				otherPlayer.getUsername().trim());
+	}
+	
+	@Override
+	public int hashCode() {
+		return getUsername().trim().toLowerCase().hashCode();
+	}
+	
+//	public void setHandler(Handler handler) {
+//		this.handler = handler;
+//	}
+
+	public void updateFrames() {
+		//Animations
+		animUp.setFrames(Assets.player_up);
+		animDown.setFrames(Assets.player_down);
+		animLeft.setFrames(Assets.player_left);
+		animRight.setFrames(Assets.player_right);
+		
 	}
 
 	protected void setSolidity(boolean b) {
@@ -62,6 +115,11 @@ public class Player extends Creature implements Runnable{
 
 	@Override
 	public void tick() {
+		/* Não é o player do client */
+		if (client == null) {
+			return;
+		}
+		
 		//Animations
 		animUp.tick();
 		animDown.tick();
@@ -77,6 +135,15 @@ public class Player extends Creature implements Runnable{
 		//handler.getGameCamera().centerOnEntity(this);
 		//Attack
 		checkHurts();
+	}
+	
+	@Override
+	public void move() {
+		super.move();
+		if (client != null) {
+			Packet06Move packet = new Packet06Move(this);
+			client.sendPacket(packet);
+		}
 	}
 	
 	//Bomb Attacks
@@ -124,8 +191,8 @@ public class Player extends Creature implements Runnable{
 		if(!handler.getWorld().hasBomb(getCurrentTileX(x), getCurrentTileY(y+15)) 
 				&& nOfBombs < maxBombs) {
 			Bomb bomba = new Bomb(handler, (int)x, (int)y);
-			handler.getWorld().getEntityManager().addBomb(bomba);
-			System.out.println("Bomba plantada");
+			//handler.getWorld().getEntityManager().addEntity(bomba);
+			client.sendPacket(new Packet07PlantBomb(bomba));
 			nOfBombs++;
 		}
 	}

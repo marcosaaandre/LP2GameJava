@@ -38,7 +38,7 @@ public class Som {
 	    
 	}
 	
-	//metodo que da play faz o som da play
+	//metodo que da play faz o som dar play
 	 public void play() {
      	if(clip == null) return;
      	stop();

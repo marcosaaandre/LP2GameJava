@@ -15,12 +15,11 @@ import dev.learninggame.tiles.Tile;
  */
 public class Brick extends Entity{
 
-	private BufferedImage brickTexture;
+	private static BufferedImage brickTexture = Assets.brick;
 	
 	
 	public Brick(Handler handler, float x, float y) {
 		super(handler, x, y, Tile.TILEWIDTH, Tile.TILEHEIGHT);
-		this.brickTexture = Assets.brick;
 		
 		//Posicao da bomba
 		bounds.x = Tile.TILEWIDTH * getCurrentTileX(x);

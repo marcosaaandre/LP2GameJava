@@ -1,6 +1,7 @@
 package dev.learninggame.entities;
 
 import java.awt.Graphics;
+import java.awt.image.BufferedImage;
 import java.io.FileNotFoundException;
 
 import dev.learninggame.Handler;
@@ -76,8 +77,12 @@ public class Bomb extends Entity{
 		this.id = id;
 	}
 	
+	public void updateFrames() {
+		animBomb.setFrames(Assets.putBomb);
+	}
+	
 	public void explodeThisBomb() {
-		System.out.println("aqui");
+		// System.out.println("aqui");
 		currentTime = System.currentTimeMillis() + 5000;
 	}
 	
@@ -90,9 +95,9 @@ public class Bomb extends Entity{
 		int fireId = handler.getWorld().getCurrentId();
 		if(getTimeToExplode() > 5000) {
 			handler.getWorld().installFire(x, y, Fire.MAIN, fireId);
-			handler.getWorld().getEntityManager().removeBomb(id);
+			handler.getWorld().getEntityManager().removeEntity(this);
 			handler.getWorld().addCurrentId();
-			handler.getWorld().getEntityManager().getPlayer().addnOfBombs();
+			//handler.getWorld().getEntityManager().getPlayer().addnOfBombs();
 			
 		}
 	}
